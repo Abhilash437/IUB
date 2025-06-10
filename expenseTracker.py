@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import io
 from datetime import datetime, timedelta
 
 # Constants
@@ -55,7 +56,7 @@ def generate_default_table():
         data.append({
             'Month': month.strftime('%b %Y'),
             'Living Expense ($)': living_expense,
-            'TA Income ($)': 0,
+            'RA Income ($)': 0,
             'Semester Fee ($)': 0,
             'Health Insurance ($)': 0,
             'Covered by Canara ($)': 0,
@@ -100,7 +101,7 @@ starting_balance = 5000
 previous_net_balance = starting_balance
 
 for idx, row in edited_df.iterrows():
-    ta_income = row['TA Income ($)']
+    ta_income = row['RA Income ($)']
     living_cost = row['Living Expense ($)']
     interest = cumulative * 0.012
 
@@ -167,7 +168,13 @@ ax2.set_title("Monthly Net Balance")
 plt.xticks(rotation=45)
 st.pyplot(fig2)
 
-# Download as Excel
-if st.button("\U0001F4C5 Download as Excel"):
-    edited_df.to_excel("masters_expense_tracker_usd.xlsx", index=False)
-    st.success("Excel file 'masters_expense_tracker_usd.xlsx' has been generated!")
+excel_buffer = io.BytesIO()
+edited_df.to_excel(excel_buffer, index=False, engine='openpyxl')
+excel_buffer.seek(0)
+
+st.download_button(
+    label="📥 Download as Excel",
+    data=excel_buffer,
+    file_name="masters_expense_tracker_usd.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
