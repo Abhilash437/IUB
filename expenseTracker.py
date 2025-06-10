@@ -101,6 +101,7 @@ starting_balance = 5000
 previous_net_balance = starting_balance
 
 for idx, row in edited_df.iterrows():
+    # Monthly calculations
     ta_income = row['RA Income ($)']
     living_cost = row['Living Expense ($)']
     interest = cumulative * 0.012
