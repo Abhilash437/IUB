@@ -88,6 +88,9 @@ def generate_default_table():
 
 if 'expense_df' not in st.session_state:
     st.session_state.expense_df = generate_default_table()
+# Force regenerate the DataFrame if schema mismatch or error occurs
+if 'RA Income ($)' not in st.session_state.get('expense_df', pd.DataFrame()).columns:
+    st.session_state.expense_df = generate_default_table()
 
 edited_df = st.data_editor(st.session_state.expense_df, use_container_width=True, num_rows="dynamic")
 
